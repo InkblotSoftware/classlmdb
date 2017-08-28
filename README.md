@@ -162,7 +162,7 @@ bound to the same license.)
 Full API
 --------
 
-__lmbdenv__
+__lmdbenv__
 
 ```c
 //  Ctr. Accesses the LMDB file at the given path, creates if not present.
