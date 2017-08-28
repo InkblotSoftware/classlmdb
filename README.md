@@ -1,6 +1,10 @@
 # classlmdb
 Object-oriented C interface for the LMDB database
 
+
+Rationale
+---------
+
 LMDB is the fastest database for most read-biased workloads, offering zero-copy
 access to data, full ACID semantics, and MVCC for non-blocking concurrent
 read access.
@@ -20,33 +24,6 @@ a higher level language with a C FFI, and while you could spend days writing
 an idiomatic interface wrapping the LMDB API in your own language, you'd
 much rather just get a library off the shelf that does 95% or all of the
 work for you. Just sprinkle a little bit of RAII and you're golden, etc.
-
-
-Core classes
-------------
-
-__lmdbenv__ - an *LMDB Environment* manages an LMDB storage file on disk.
-Everything starts by creating one of these.
-
-__lmdbdbi__ - a *Database Interface* manages a named collecion of key/value
-pairs inside the LMDB file/environment. This is what LMDB calls a *database* -
-a database is *not* a file on disk.
-
-__lmdbtxn__ - a *Transaction* allows you to interact with a database. They can
-be read-only or read-write; only use the latter if you *must* change data,
-as more write transactions can have a big impact on concurrent write performance.
-Make sure also to close transactions as soon as possible, as very long running
-transactions can cause file size bloat.
-Note that values returned within a transaction are only valid up to its closing.
-
-__lmdbcur__ - a *Cursor* lets you traverse subsets of data in a database
-sequentially. You need this e.g. if you don't already know what's there.
-
-__lmdbspan__ - an *LMDB Span* is a view into an array of immutable data curently
-stored in the LMDB file, specifically the key or value of a stored pair.
-Since instances of this class don't own the data they're always copied by value.
-As above, note that spans are only valid until the transaction used to obtain
-them is closed.
 
 
 Example
@@ -97,6 +74,33 @@ int rc = 1;
 lmdbdbi_destroy (&dbi);
 lmdbenv_destroy (&env);
 ```
+
+
+Core classes
+------------
+
+__lmdbenv__ - an *LMDB Environment* manages an LMDB storage file on disk.
+Everything starts by creating one of these.
+
+__lmdbdbi__ - a *Database Interface* manages a named collecion of key/value
+pairs inside the LMDB file/environment. This is what LMDB calls a *database* -
+a database is *not* a file on disk.
+
+__lmdbtxn__ - a *Transaction* allows you to interact with a database. They can
+be read-only or read-write; only use the latter if you *must* change data,
+as more write transactions can have a big impact on concurrent write performance.
+Make sure also to close transactions as soon as possible, as very long running
+transactions can cause file size bloat.
+Note that values returned within a transaction are only valid up to its closing.
+
+__lmdbcur__ - a *Cursor* lets you traverse subsets of data in a database
+sequentially. You need this e.g. if you don't already know what's there.
+
+__lmdbspan__ - an *LMDB Span* is a view into an array of immutable data curently
+stored in the LMDB file, specifically the key or value of a stored pair.
+Since instances of this class don't own the data they're always copied by value.
+As above, note that spans are only valid until the transaction used to obtain
+them is closed.
 
 
 Installation and usage
