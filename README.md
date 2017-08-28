@@ -79,6 +79,7 @@ int rc = 1;
 
     // Similar, but for uint32_t -> double
     lmdbspan r2 = lmdbdbi_get_ui32 (dbi, txn, 222);
+    assert (lmdbspan_valid (r2));
     assert (lmdbspan_size (r2) == sizeof (double));
     assert (lmdbspan_asdouble (r2) == 999.999);
 
