@@ -30,24 +30,33 @@ Example
 -------
 
 ```c
+// An 'environment' manages a file on disk
 lmdbenv_t *env = lmdbenv_new ("testdb.db");
 assert (env);
+
+// A 'database' is a named collection of key/val pairs within an LMDB file;
+// we access it through a 'database interface'
 lmdbdbi_t *dbi = lmdbdbi_new (env, "pets_data");
 assert (dbi);
+
 int rc = 1;
 
 // Put some data
-{  
+{
+    // Open a write trasaction
     lmdbtxn_t *txn = lmdbtxn_new_rdrw (env);
     assert (txn);
 
+    // PUT a string->string key/val pair (including the terminating NULLs)
     rc = lmdbdbi_put_strstr (dbi, txn, "cat", "felix");
     assert (!rc);
 
+    // PUT a uint32_t -> anything key/val pair
     double num = 999.999;
     rc = lmdbdbi_put_ui32 (dbi, txn, 222, &num, sizeof (num));
     assert (!rc);
 
+    // Write changes to disk
     rc = lmdbtxn_commit (txn);
     assert (!rc);
 
@@ -55,15 +64,20 @@ int rc = 1;
 }
    
 // Read it back
-{  
+{
+    // We only need a read transaction this time
     lmdbtxn_t *txn = lmdbtxn_new_rdonly (env);
     assert (txn);
 
+    // Get a value with the given string key (lmdbspans give zero copy
+    // access to data currently stored in the DB)
     lmdbspan r1 = lmdbdbi_get_str (dbi, txn, "cat");
     assert (lmdbspan_valid (r1));
+    // We know the value is a string, so use the lmdbspan string cast helper
     const char *r1_str = lmdbspan_asstr (r1);
     assert (streq (r1_str, "felix"));
 
+    // Similar, but for uint32_t -> double
     lmdbspan r2 = lmdbdbi_get_ui32 (dbi, txn, 222);
     assert (lmdbspan_size (r2) == sizeof (double));
     assert (lmdbspan_asdouble (r2) == 999.999);
