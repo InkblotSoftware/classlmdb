@@ -1,0 +1,19 @@
+<project name = "classlmdb"
+         description = "Object-oriented C interface for the LMDB database"
+         license = "MPLv2"
+         script = "zproject.gsl"
+         >
+  <include filename = "license.xml" />
+  
+  <use project = "czmq" />
+  <use project = "lmdb"
+       test = "mdb_env_create" />
+
+  <class name = "lmdbenv" />
+  <class name = "lmdbdbi" />
+  <class name = "lmdbtxn" />
+  <class name = "lmdbcur" />
+  
+  <header name = "classlmdb_lmdbspan" />
+
+</project>

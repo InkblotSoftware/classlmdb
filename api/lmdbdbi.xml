@@ -1,0 +1,148 @@
+<class name = "lmdbdbi">
+  <!--
+  Copyright (c) 2017 Inkblot Software Limited.
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+  Manager for a named LMDB database interface, within an lmdbenv object
+
+
+  <!-- Ctr/dtr -->
+
+  <constructor>
+    Create a named database interface object, using the provided lmdbenv.
+    Note that a database is not a file, but a key/val collection inside one.
+    Creates the database if it does not already exist.
+    If you want the file to contain exactly one database, pass NULL for name.
+    Returns NULL on failure.
+
+    <argument name = "env" type = "lmdbenv" />
+    <argument name = "name" type = "string" />
+  </constructor>
+
+  <constructor name = "new intkeys">
+    As simple ctr, but the DB must only hold keys of unsigned int or size_t,
+    all keys having the same size, and with sequential traversal (e.g. with
+    a cursor) following their natural numeric order, not doing a per-byte
+    comparison like LMDB usually does.
+    
+    <argument name = "env" type = "lmdbenv" />
+    <argument name = "name" type = "string" />
+  </constructor>
+
+  <destructor>
+    Aborts the transaction if not already committed.
+  </destructor>
+
+
+  <!-- GET methods -->
+
+  <method name = "get">
+    Fetch a the value from the DB with the given key.
+    Returns nullish lmdbspan (.data == NULL) if the key doesn't exist, or if an
+    error occurs (this will be becuase you supplied a duff dbi or txn).
+
+    <argument name = "txn" type = "lmdbtxn" />
+
+    <argument name = "key" type = "anything" mutable = "0" />
+    <argument name = "key size" type = "size" />
+
+    <return type = "lmdbspan" c_type = "lmdbspan" />
+  </method>
+
+  <method name = "get str">
+    As get method, but takes a string as key.
+    NB counts the terminating NULL as part of the string.
+
+    <argument name = "txn" type = "lmdbtxn" />
+    <argument name = "key" type = "string" />
+
+    <return type = "lmdbspasn" c_type = "lmdbspan" />
+  </method>
+
+  <method name = "get ui32">
+    As get method, but takes an uint32_t as key.
+
+    <argument name = "txn" type = "lmdbtxn" />
+    <argument name = "key" type = "number" size = "4" />
+
+    <return type = "lmdbspan" c_type = "lmdbspan" />
+  </method>
+
+
+  <!-- PUT methods -->
+
+  <method name = "put">
+    Put a key/val pair to the DB.
+    Returns 0 on sucess, -1 on failure.
+    
+    <argument name = "txn" type = "lmdbtxn" />
+
+    <argument name = "key" type = "anything" mutable = "0" />
+    <argument name = "key size" type = "size" />
+    
+    <argument name = "value" type = "anything" mutable = "0" />
+    <argument name = "value size" type = "size" />
+
+    <return type = "integer" />
+  </method>
+
+  <method name = "put str">
+    As put method, but takes a string as the key.
+    NB treats the terminating NULL as part of the string.
+
+    <argument name = "txn" type = "lmdbtxn" />
+
+    <argument name = "key" type = "string" />
+
+    <argument name = "value" type = "anything" mutable = "0" />
+    <argument name = "value size" type = "size" />
+
+    <return type = "integer" />
+  </method>
+
+  <method name = "put strstr">
+    As put method, but takes both key and val are strings.
+    NB for both strings counts the terminating NULL as part of the string.
+
+    <argument name = "txn" type = "lmdbtxn" />
+
+    <argument name = "key" type = "string" />
+    
+    <argument name = "value" type = "string" />
+
+    <return type = "integer" />
+  </method>
+
+  <method name = "put ui32">
+    As put method, but takes a uint32_t as key.
+    
+    <argument name = "txn" type = "lmdbtxn" />
+    
+    <argument name = "key" type = "number" size = "4" />
+    
+    <argument name = "val" type = "anything" mutable = "0" />
+    <argument name = "val_size" type = "size" />
+    
+    <return type = "integer" />
+  </method>
+  
+  
+  <!-- Accessors -->
+  
+  <method name = "has intkey">
+    Returns true iff the instance was created as an intkeys dbi.
+    <return type = "boolean" />
+  </method>
+
+  <method name = "handle">
+    Return a copy of the the underlying MDB_dbi.
+    BEWARE: this is an escape hatch for people that *really* need it; if you
+    need more functionality then prefer to extend this library to contain it.
+    <return type = "MDB_dbi" c_type = "MDB_dbi" />
+  </method>
+  
+</class>  

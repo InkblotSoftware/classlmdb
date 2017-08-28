@@ -1,0 +1,47 @@
+<class name = "lmdbenv">
+  <!--
+  Copyright (c) 2017 Inkblot Software Limited.
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+  Manager for an LMDB Environment, the in-memory interface to an LMDB file on disk
+
+
+  <!-- Ctr/dtr -->
+
+  <constructor>
+    Ctr. Accesses the LMDB file at the given path, creates if not present.
+    Assumes default limits of max file size = 1GB and max number of named
+    DBs in the file = 10.
+    Returns NULL on error.
+    
+    <argument name = "path" type = "string" />
+  </constructor>
+
+  <constructor name ="new withlimits">
+    As simple constructor, but lets you control the max filesize and max
+    named DB count limits.
+    Note that we round max_size up to the nearest multiple of 4096.
+
+    <argument name = "path" type = "string" />
+    <argument name = "max_size" type = "size" />
+    <argument name = "max_dbs" type = "size" />
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+
+  <!-- Accessors -->
+
+  <method name = "handle">
+    Return a pointer to the underlying MDB_env instance.
+    BEWARE: this is an escape hatch for people that *really* need it; if you
+    need more functionality then prefer to extend this library to contain it.
+    <return type = "MDB_env pointer" c_type = "MDB_env *" />
+  </method>
+
+</class>

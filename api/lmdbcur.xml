@@ -1,0 +1,74 @@
+<class name = "lmdbcur">
+  <!--
+  Copyright (c) 2017 Inkblot Software Limited.
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+  Manager for an LMDB database-traversal cursor.
+
+
+  <!-- Ctr/dtr -->
+
+  <constructor name = "new overall">
+    Creates a cursor that traverses all k/y pairs in the DB in ascending order.
+    Returns NULL on any error.
+
+    <argument name = "dbi" type = "lmdbdbi" />
+    <argument name = "txn" type = "lmdbtxn" />
+  </constructor>
+
+  <constructor name = "new fromkey">
+    Creates a cursor that traverses all k/y pairs in the DB in ascending order,
+    starting at the provided key. This key must exist.
+    Returns NULL on any error.
+
+    <argument name = "dbi" type = "lmdbdbi" />
+    <argument name = "txn" type = "lmdbtxn" />
+
+    <argument name = "key" type = "anything" mutable = "0" />
+    <argument name = "key size" type = "size" />
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+
+  <!-- Moving the cursor -->
+
+  <method name = "next">
+    Move the cursor to the next k/v pair in the db, in key sorted
+    ascending order.
+    Returns 0 on success, or -1 if no such key exists.
+    <return type = "integer" />
+  </method>
+
+
+  <!-- Accessing the k/v the cursor is pointing to -->
+
+  <method name = "key">
+    Returns the key the cursor is curently pointing to.
+    You need this when you call _next() and don't know what's there.
+    Returns nullish lmdbspan on error (!lmdspan_valid (s)), which isn't a real
+    value that can be returned from the DB.
+    <return type = "lmdbspan" c_type = "lmdbspan" />
+  </method>
+
+  <method name = "val">
+    Like key(), but returns the value the cursor is curently pointing to.
+    <return type = "lmdbspan" c_type = "lmdbspan" />
+  </method>
+  
+
+  <!-- Accessors -->
+
+  <method name = "handle">
+    Return a pointer to the underlying MDB_cur we're managing.
+    BEWARE: this is an escape hatch for people that *really* need it; if you
+    need more functionality then prefer to extend this library to contain it.
+    <return type = "MDB_cursor ptr" c_type = "MDB_cursor *" />
+  </method>
+
+</class>
