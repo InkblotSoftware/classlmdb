@@ -25,24 +25,24 @@ work for you. Just sprinkle a little bit of RAII and you're golden, etc.
 Core classes
 ------------
 
-_lmdbenv_ - an *LMDB Environment* manages an LMDB storage file on disk.
+__lmdbenv__ - an *LMDB Environment* manages an LMDB storage file on disk.
 Everything starts by creating one of these.
 
-_lmdbdbi_ - a *Database Interface* manages a named collecion of key/value
+__lmdbdbi__ - a *Database Interface* manages a named collecion of key/value
 pairs inside the LMDB file/environment. This is what LMDB calls a *database* -
 a database is *not* a file on disk.
 
-_lmdbtxn_ - a *Transaction* allows you to interact with a database. They can
+__lmdbtxn__ - a *Transaction* allows you to interact with a database. They can
 be read-only or read-write; only use the latter if you *must* change data,
 as more write transactions can have a big impact on concurrent write performance.
 Make sure also to close transactions as soon as possible, as very long running
 transactions can cause file size bloat.
 Note that values returned within a transaction are only valid up to its closing.
 
-_lmdbcur_ - a *Cursor* lets you traverse subsets of data in a database
+__lmdbcur__ - a *Cursor* lets you traverse subsets of data in a database
 sequentially. You need this e.g. if you don't already know what's there.
 
-_lmdbspan_ - an *LMDB Span* is a view into an array of immutable data curently
+__lmdbspan__ - an *LMDB Span* is a view into an array of immutable data curently
 stored in the LMDB file, specifically the key or value of a stored pair.
 Since instances of this class don't own the data they're always copied by value.
 As above, note that spans are only valid until the transaction used to obtain
@@ -129,13 +129,13 @@ sudo make install
 Caveats
 -------
 
-*Alignment*: LMDB by default only guarantees that stored data - keys and values -
+__Alignment__: LMDB by default only guarantees that stored data - keys and values -
 are aligned to two byte boundaries. If you want more, make the size of every
 key and every value in a database a multiple of the alignment you want, and
 you'll get it. But note that modern Intel processors don't impose a cost on
 misaligned access.
 
-*Concurrency*: Transactions are private to the thread that created them.
+__Concurrency__: Transactions are private to the thread that created them.
 Call all lmdbenv_xxx methods from the thread that first opened the lmdbenv
 they're working on. And don't open two lmdbenv's pointing at the same file
 at the same time, though I don't know quite why you'd want to do that.
@@ -158,7 +158,7 @@ bound to the same license.)
 Full API
 --------
 
-_lmbdenv_
+__lmbdenv__
 
 ```c
 //  Ctr. Accesses the LMDB file at the given path, creates if not present.
@@ -185,7 +185,7 @@ CLASSLMDB_EXPORT MDB_env *
     lmdbenv_handle (lmdbenv_t *self);
 ```
 
-_lmdbdbi_
+__lmdbdbi__
 
 ```c
 //  Create a named database interface object, using the provided lmdbenv.
@@ -259,7 +259,7 @@ CLASSLMDB_EXPORT MDB_dbi
     lmdbdbi_handle (lmdbdbi_t *self);
 ```
 
-_lmdbtxn_
+__lmdbtxn__
 
 ```c
 //  Open a new read-only transaction for the provided lmdbenv.
@@ -293,7 +293,7 @@ CLASSLMDB_EXPORT MDB_txn *
     lmdbtxn_handle (lmdbtxn_t *self);
 ```
 
-_lmdbcur_
+__lmdbcur__
 
 ```c
 //  Creates a cursor that traverses all k/y pairs in the DB in ascending order.
@@ -335,7 +335,7 @@ CLASSLMDB_EXPORT MDB_cursor *
     lmdbcur_handle (lmdbcur_t *self);
 ```
 
-_lmdbspan_
+__lmdbspan__
 
 (Exposed as header-only functions)
 
