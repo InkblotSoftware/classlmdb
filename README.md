@@ -30,7 +30,7 @@ Example
 -------
 
 ```c
-#include <classlmdb.h>
+// #include <classlmdb.h>
 
 // An 'environment' manages a file on disk
 lmdbenv_t *env = lmdbenv_new ("testdb.db");
