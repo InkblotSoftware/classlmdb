@@ -124,6 +124,15 @@ lmdbdbi_get_ui32 (lmdbdbi_t *self, lmdbtxn_t *txn, uint32_t key)
 }
 
 lmdbspan
+lmdbdbi_get_i32 (lmdbdbi_t *self, lmdbtxn_t *txn, int32_t key)
+{
+    assert (self);
+    assert (txn);
+
+    return lmdbdbi_get (self, txn, &key, sizeof (key));
+}
+
+lmdbspan
 lmdbdbi_get (lmdbdbi_t *self, lmdbtxn_t *txn, const void *key, size_t key_size)
 {
     assert (self);
@@ -186,6 +195,15 @@ lmdbdbi_put_ui32 (lmdbdbi_t *self, lmdbtxn_t *txn,
     return lmdbdbi_put (self, txn, &key, sizeof (key), val, val_size);
 }
 
+int
+lmdbdbi_put_i32 (lmdbdbi_t *self, lmdbtxn_t *txn,
+                 int32_t key,
+                 const void *val, size_t val_size)
+{
+    assert (self);
+    assert (txn);
+    return lmdbdbi_put (self, txn, &key, sizeof (key), val, val_size);
+}
 
 int
 lmdbdbi_put (lmdbdbi_t *self, lmdbtxn_t *txn,
@@ -274,13 +292,11 @@ lmdbdbi_test (bool verbose)
     zstr_free (&test_db_path);
 
     // Simple db
-    //lmdbdbi_t *dbisim = lmdbenv_makedbi (env, "simple_db");
     lmdbdbi_t *dbisim = lmdbdbi_new (env, "simple_db");
     assert (dbisim);
     assert (lmdbdbi_has_intkeys (dbisim) == false);
 
     // Intkey db
-    //lmdbdbi_t *dbiik = lmdbenv_makedbi_intkeys (env, "intkey_db");
     lmdbdbi_t *dbiik = lmdbdbi_new_intkeys (env, "intkey_db");
     assert (dbiik);
     assert (lmdbdbi_has_intkeys (dbiik) == true);
@@ -306,6 +322,12 @@ lmdbdbi_test (bool verbose)
     lmdbspan r2 = lmdbdbi_get_ui32 (dbisim, txn, 123);
     assert (lmdbspan_asdouble (r2) == dubkey);
 
+    rc = lmdbdbi_put_i32 (dbisim, txn, -789, &dubkey, sizeof (dubkey));
+    assert (!rc);
+
+    lmdbspan r3 = lmdbdbi_get_i32 (dbisim, txn, -789);
+    assert (lmdbspan_asdouble (r3) == dubkey);
+
     if (verbose)
         log ("Simple db tests passed");
 
@@ -315,8 +337,8 @@ lmdbdbi_test (bool verbose)
     rc = lmdbdbi_put_ui32 (dbiik, txn, 88, &dubkey, sizeof (dubkey));
     assert (!rc);
 
-    lmdbspan r3 = lmdbdbi_get_ui32 (dbiik, txn, 88);
-    assert (lmdbspan_asdouble (r3) == dubkey);
+    lmdbspan r4 = lmdbdbi_get_ui32 (dbiik, txn, 88);
+    assert (lmdbspan_asdouble (r4) == dubkey);
 
     if (verbose)
         log ("Intkey db tests passed");

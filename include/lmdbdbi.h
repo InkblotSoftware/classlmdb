@@ -62,6 +62,11 @@ CLASSLMDB_EXPORT lmdbspan
     lmdbdbi_get_ui32 (lmdbdbi_t *self, lmdbtxn_t *txn, uint32_t key);
 
 //  *** Draft method, for development use, may change without warning ***
+//  As get method, but takes an int32_t as key.
+CLASSLMDB_EXPORT lmdbspan
+    lmdbdbi_get_i32 (lmdbdbi_t *self, lmdbtxn_t *txn, int32_t key);
+
+//  *** Draft method, for development use, may change without warning ***
 //  Put a key/val pair to the DB.
 //  Returns 0 on sucess, -1 on failure.
 CLASSLMDB_EXPORT int
@@ -83,6 +88,11 @@ CLASSLMDB_EXPORT int
 //  As put method, but takes a uint32_t as key.
 CLASSLMDB_EXPORT int
     lmdbdbi_put_ui32 (lmdbdbi_t *self, lmdbtxn_t *txn, uint32_t key, const void *val, size_t val_size);
+
+//  *** Draft method, for development use, may change without warning ***
+//  As put method, but takes an int32_t as key.
+CLASSLMDB_EXPORT int
+    lmdbdbi_put_i32 (lmdbdbi_t *self, lmdbtxn_t *txn, int32_t key, const void *val, size_t val_size);
 
 //  *** Draft method, for development use, may change without warning ***
 //  Returns true iff the instance was created as an intkeys dbi.

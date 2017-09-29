@@ -72,6 +72,15 @@
     <return type = "lmdbspan" c_type = "lmdbspan" />
   </method>
 
+  <method name = "get i32">
+    As get method, but takes an int32_t as key.
+
+    <argument name = "txn" type = "lmdbtxn" />
+    <argument name = "key" type = "i32" c_type = "int32_t" />
+
+    <return type = "lmdbspan" c_type = "lmdbspan" />
+  </method>
+
 
   <!-- PUT methods -->
 
@@ -130,6 +139,19 @@
     <return type = "integer" />
   </method>
   
+  <method name = "put i32">
+    As put method, but takes an int32_t as key.
+    
+    <argument name = "txn" type = "lmdbtxn" />
+    
+    <argument name = "key" type = "i32" c_type = "int32_t" />
+    
+    <argument name = "val" type = "anything" mutable = "0" />
+    <argument name = "val_size" type = "size" />
+    
+    <return type = "integer" />
+  </method>
+
   
   <!-- Accessors -->
   
