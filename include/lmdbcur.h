@@ -22,21 +22,26 @@ extern "C" {
 //  This API is a draft, and may change without notice.
 #ifdef CLASSLMDB_BUILD_DRAFT_API
 //  *** Draft method, for development use, may change without warning ***
-//  Creates a cursor that traverses all k/y pairs in the DB in ascending order.
+//  Creates a cursor that traverses all k/v pairs in the DB in ascending order.
 //  Returns NULL on any error.
 CLASSLMDB_EXPORT lmdbcur_t *
     lmdbcur_new_overall (lmdbdbi_t *dbi, lmdbtxn_t *txn);
 
 //  *** Draft method, for development use, may change without warning ***
 //  Creates a cursor that traverses all k/y pairs in the DB in ascending order,
-//  starting at the provided key. This key must exist.
-//  Returns NULL on any error.
+//  starting at the provided key. Key must exist.
+//  Returns NULL on any error except key not existing.
+//
+//  Construction still succeeds if the key was not found, so check immediately
+//  after with _matched() to see if the cursor is usable. Other methods will
+//  fail if not.
 CLASSLMDB_EXPORT lmdbcur_t *
     lmdbcur_new_fromkey (lmdbdbi_t *dbi, lmdbtxn_t *txn, const void *key, size_t key_size);
 
 //  *** Draft method, for development use, may change without warning ***
 //  As _fromkey ctr, but if the provided key does not exist starts iteration
 //  at the next key above it ('greater than or equal to key').
+//  If no keys exist above, iterates over the empty set, like _overall() will.
 //  Returns NULL on any error.
 CLASSLMDB_EXPORT lmdbcur_t *
     lmdbcur_new_gekey (lmdbdbi_t *dbi, lmdbtxn_t *txn, const void *key, size_t key_size);
@@ -52,6 +57,13 @@ CLASSLMDB_EXPORT void
 //  Returns 0 on success, or -1 if no such key exists.
 CLASSLMDB_EXPORT int
     lmdbcur_next (lmdbcur_t *self);
+
+//  *** Draft method, for development use, may change without warning ***
+//  Did the cursor manage to find a key/val pair with a key matching
+//  the one you asked for the the ctr?
+//  Only valid if new_fromkey ctr used.
+CLASSLMDB_EXPORT bool
+    lmdbcur_matched (lmdbcur_t *self);
 
 //  *** Draft method, for development use, may change without warning ***
 //  Returns the key the cursor is curently pointing to.

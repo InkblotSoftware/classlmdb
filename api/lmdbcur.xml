@@ -13,7 +13,7 @@
   <!-- Ctr/dtr -->
 
   <constructor name = "new overall">
-    Creates a cursor that traverses all k/y pairs in the DB in ascending order.
+    Creates a cursor that traverses all k/v pairs in the DB in ascending order.
     Returns NULL on any error.
 
     <argument name = "dbi" type = "lmdbdbi" />
@@ -22,9 +22,13 @@
 
   <constructor name = "new fromkey">
     Creates a cursor that traverses all k/y pairs in the DB in ascending order,
-    starting at the provided key. This key must exist.
-    Returns NULL on any error.
+    starting at the provided key. Key must exist.
+    Returns NULL on any error except key not existing.
 
+    Construction still succeeds if the key was not found, so check immediately
+    after with _matched() to see if the cursor is usable. Other methods will
+    fail if not.
+    
     <argument name = "dbi" type = "lmdbdbi" />
     <argument name = "txn" type = "lmdbtxn" />
 
@@ -35,8 +39,9 @@
   <constructor name = "new gekey">
     As _fromkey ctr, but if the provided key does not exist starts iteration
     at the next key above it ('greater than or equal to key').
-    Returns NULL on any error, including if no ge key exists.
-    
+    If no keys exist above, iterates over the empty set, like _overall() will.
+    Returns NULL on any error.
+
     <argument name = "dbi" type = "lmdbdbi" />
     <argument name = "txn" type = "lmdbtxn" />
 
@@ -58,6 +63,16 @@
   </method>
 
 
+  <!-- If you searched for a specific key, check it was found -->
+
+  <method name = "matched">
+    Did the cursor manage to find a key/val pair with a key matching
+    the one you asked for the the ctr?
+    Only valid if new_fromkey ctr used.
+    <return type = "boolean" />
+  </method>
+
+  
   <!-- Accessing the k/v the cursor is pointing to -->
 
   <method name = "key">
