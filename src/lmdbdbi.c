@@ -232,7 +232,7 @@ lmdbdbi_put (lmdbdbi_t *self, lmdbtxn_t *txn,
 //  Accessors
 
 bool
-lmdbdbi_has_intkeys (lmdbdbi_t *self)
+lmdbdbi_intkeys (lmdbdbi_t *self)
 {
     assert (self);
     return self->is_intkeys;
@@ -294,12 +294,12 @@ lmdbdbi_test (bool verbose)
     // Simple db
     lmdbdbi_t *dbisim = lmdbdbi_new (env, "simple_db");
     assert (dbisim);
-    assert (lmdbdbi_has_intkeys (dbisim) == false);
+    assert (lmdbdbi_intkeys (dbisim) == false);
 
     // Intkey db
     lmdbdbi_t *dbiik = lmdbdbi_new_intkeys (env, "intkey_db");
     assert (dbiik);
-    assert (lmdbdbi_has_intkeys (dbiik) == true);
+    assert (lmdbdbi_intkeys (dbiik) == true);
 
     lmdbtxn_t *txn = lmdbtxn_new_rdrw (env);
     assert (txn);

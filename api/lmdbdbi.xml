@@ -155,7 +155,7 @@
   
   <!-- Accessors -->
   
-  <method name = "has intkey">
+  <method name = "intkeys">
     Returns true iff the instance was created as an intkeys dbi.
     <return type = "boolean" />
   </method>

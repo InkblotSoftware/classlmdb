@@ -97,7 +97,7 @@ CLASSLMDB_EXPORT int
 //  *** Draft method, for development use, may change without warning ***
 //  Returns true iff the instance was created as an intkeys dbi.
 CLASSLMDB_EXPORT bool
-    lmdbdbi_has_intkey (lmdbdbi_t *self);
+    lmdbdbi_intkeys (lmdbdbi_t *self);
 
 //  *** Draft method, for development use, may change without warning ***
 //  Return a copy of the the underlying MDB_dbi.
