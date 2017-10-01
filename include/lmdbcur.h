@@ -35,6 +35,13 @@ CLASSLMDB_EXPORT lmdbcur_t *
     lmdbcur_new_fromkey (lmdbdbi_t *dbi, lmdbtxn_t *txn, const void *key, size_t key_size);
 
 //  *** Draft method, for development use, may change without warning ***
+//  As _fromkey ctr, but if the provided key does not exist starts iteration
+//  at the next key above it ('greater than or equal to key').
+//  Returns NULL on any error.
+CLASSLMDB_EXPORT lmdbcur_t *
+    lmdbcur_new_gekey (lmdbdbi_t *dbi, lmdbtxn_t *txn, const void *key, size_t key_size);
+
+//  *** Draft method, for development use, may change without warning ***
 //  Destroy the lmdbcur.
 CLASSLMDB_EXPORT void
     lmdbcur_destroy (lmdbcur_t **self_p);
