@@ -106,6 +106,7 @@ lmdbdbi_destroy (lmdbdbi_t **self_p)
 lmdbspan
 lmdbdbi_get_str (lmdbdbi_t *self, lmdbtxn_t *txn, const char *key)
 {
+    assert (! lmdbdbi_intkeys (self) && "get str key not valid for intkeys dbi");
     assert (self);
     assert (txn);
     assert (key);
@@ -126,6 +127,7 @@ lmdbdbi_get_ui32 (lmdbdbi_t *self, lmdbtxn_t *txn, uint32_t key)
 lmdbspan
 lmdbdbi_get_i32 (lmdbdbi_t *self, lmdbtxn_t *txn, int32_t key)
 {
+    assert (! lmdbdbi_intkeys (self) && "get i32 key not valid for intkeys dbi");
     assert (self);
     assert (txn);
 
@@ -135,6 +137,8 @@ lmdbdbi_get_i32 (lmdbdbi_t *self, lmdbtxn_t *txn, int32_t key)
 lmdbspan
 lmdbdbi_get (lmdbdbi_t *self, lmdbtxn_t *txn, const void *key, size_t key_size)
 {
+    // TODO can we put a useful assert here to catch some inadvertant non-uint
+    // keys being used for intkey dbis?
     assert (self);
     assert (txn);
     assert (key);
@@ -162,6 +166,7 @@ lmdbdbi_put_str (lmdbdbi_t *self, lmdbtxn_t *txn,
                  const char *key,
                  const void *val, size_t val_size)
 {
+    assert (! lmdbdbi_intkeys (self) && "put str key not valid for intkeys dbi");
     assert (self);
     assert (txn);
     assert (key);
@@ -175,6 +180,7 @@ int
 lmdbdbi_put_strstr (lmdbdbi_t *self, lmdbtxn_t *txn,
                     const char *key, const char *val)
 {
+    assert (! lmdbdbi_intkeys (self) && "put str key not valid for intkeys dbi");
     assert (self);
     assert (txn);
     assert (key);
@@ -200,6 +206,7 @@ lmdbdbi_put_i32 (lmdbdbi_t *self, lmdbtxn_t *txn,
                  int32_t key,
                  const void *val, size_t val_size)
 {
+    assert (! lmdbdbi_intkeys (self) && "put i32 key not valid for intkeys dbi");
     assert (self);
     assert (txn);
     return lmdbdbi_put (self, txn, &key, sizeof (key), val, val_size);
@@ -210,6 +217,8 @@ lmdbdbi_put (lmdbdbi_t *self, lmdbtxn_t *txn,
              const void *key, size_t key_size,
              const void *val, size_t val_size)
 {
+    // TODO as in GET, can we have some kind of assert check to catch some non-
+    // uint key uses for intkey dbis?
     assert (self);
     assert (txn);
     assert (key);
